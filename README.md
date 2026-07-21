@@ -61,3 +61,24 @@ $DATASET_ROOT
 ## Running
 ### Please fill in or select the args enclosed by {} first.
 Specific commands are coming soon.
+
+
+## Citation
+If our project is helpful for your research, please consider citing:
+```
+@article{xu2026limssr,
+  title={LIMSSR: LLM-Driven Sequence-to-Score Reasoning under Training-Time Incomplete Multimodal Observations},
+  author={Xu, Huangbiao and Wu, Huanqi and Ke, Xiao and Peng, Yuxin},
+  journal={arXiv preprint arXiv:2605.00434},
+  year={2026}
+}
+@inproceedings{xu2026mcmoe,
+  title={MCMoE: Completing Missing Modalities with Mixture of Experts for Incomplete Multimodal Action Quality Assessment},
+  author={Xu, Huangbiao and Wu, Huanqi and Ke, Xiao and Wu, Junyi and Xu, Rui and Xu, Jinglin},
+  booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
+  volume={40},
+  number={13},
+  pages={11241--11249},
+  year={2026}
+}
+```
