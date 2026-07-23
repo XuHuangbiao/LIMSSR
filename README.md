@@ -1,5 +1,5 @@
 # LIMSSR
-[ICML'26 Spotlight (Top-2.2%)] Code for ''LIMSSR: LLM-Driven Sequence-to-Score Reasoning under Training-Time Incomplete Multimodal Observations''
+**[ICML'26 Spotlight (Top-2.2%)]** Code for ''LIMSSR: LLM-Driven Sequence-to-Score Reasoning under Training-Time Incomplete Multimodal Observations''
 
 ## Abstract
 Real-world multimodal learning is often hindered by missing modalities. While Incomplete Multimodal Learning (IML) has gained traction, existing methods typically rely on the unrealistic assumption of full-modal availability during training to provide reconstruction supervision or cross-modal priors. This paper tackles the more challenging setting of IML under training-time incomplete observations, which precludes reliance on a ``God's eye view'' of complete data. We propose LIMSSR (LLM-Driven Incomplete Multimodal Sequence-to-Score Reasoning), a framework that reformulates this challenge as a conditional sequence reasoning task. LIMSSR leverages the semantic reasoning capabilities of Large Language Models via Prompt-Guided Context-Aware Modality Imputation and Multidimensional Representation Fusion to infer latent semantics from available contexts without direct reconstruction. To mitigate hallucinations, we introduce a Mask-Aware Dual-Path Aggregation to dynamically calibrate inference uncertainty. Extensive experiments on three Action Quality Assessment datasets demonstrate that LIMSSR significantly outperforms state-of-the-art baselines without relying on complete training data, establishing a new paradigm for data-efficient multimodal learning.
@@ -58,10 +58,71 @@ $DATASET_ROOT
     └── test.txt
 ```
 
+## LLM Backbone
+You can follow the official [Qwen3](https://huggingface.co/Qwen/Qwen3-0.6B) tutorial to obtain the Qwen3-0.6B model.
+
 ## Running
 ### Please fill in or select the args enclosed by {} first.
-Specific commands are coming soon.
+On the **FS1000** dataset:
 
+- Training
+
+```
+CUDA_VISIBLE_DEVICES={device ID} python main.py --video-path {path of video features} --audio-path {path of audio features} --flow-path {path of flow features} --train-label-path {path of label file of training set} --test-label-path {path of label file of test set} --model-name {the name used to save model and log} --action-type {TES/PCS/SS/TR/PE/CO/IN} --dataset FS1000 --clip-num 95 --epoch {160/100/130/90/130/200/290}  --lr 2e-4 --lr-decay cos --decay-rate 0.1 --dropout 0.15
+
+Additional Arguments:
+PCS: --alpha_mse 1
+TR:  --alpha_con 10
+PE:  --alpha_mse 1
+CO:  --alpha_con 10
+IN:  --alpha_mse 1 --alpha 0.5
+```
+
+- Testing
+
+```
+CUDA_VISIBLE_DEVICES={device ID} python main.py --video-path {path of video features} --audio-path {path of audio features} --flow-path {path of flow features} --train-label-path {path of label file of training set} --test-label-path {path of label file of test set} --action-type {TES/PCS/SS/TR/PE/CO/IN} --dataset FS1000 --clip-num 95 --test --ckpt {the name of the used checkpoint}
+```
+
+On the **FisV** dataset:
+
+- Training
+
+```
+CUDA_VISIBLE_DEVICES={device ID} python main.py --video-path {path of video features} --audio-path {path of audio features} --flow-path {path of flow features} --train-label-path {path of label file of training set} --test-label-path {path of label file of test set} --model-name {the name used to save model and log} --action-type {TES/PCS} --dataset FisV --clip-num 124 --epoch {270/140} --lr 2e-4 --lr-decay cos --decay-rate 0.1 --dropout 0.15
+```
+
+- Testing
+
+```
+CUDA_VISIBLE_DEVICES={device ID} python main.py --video-path {path of video features} --audio-path {path of audio features} --flow-path {path of flow features} --train-label-path {path of label file of training set} --test-label-path {path of label file of test set} --action-type {TES/PCS} --dataset FisV --clip-num 124 --test --ckpt {the name of the used checkpoint}
+```
+
+On the **RG** dataset:
+
+- Training
+
+```
+CUDA_VISIBLE_DEVICES={device ID} python main.py --video-path {path of video features} --audio-path {path of audio features} --flow-path {path of flow features} --train-label-path {path of label file of training set} --test-label-path {path of label file of test set} --model-name {the name used to save model and log} --action-type {Ball/Clubs/Hoop/Ribbon} --dataset RG --clip-num 68 --epoch {80/410/100/270} --lr 2e-4 --lr-decay cos --decay-rate {0.1/0.1/0.01/0.1} --dropout {0.35/0.35/0.3/0.35}
+
+Additional Arguments:
+Ball:  --seed 6
+Clubs: --alpha 2 --seed 113
+Hoop:  --alpha_con 2
+```
+
+- Testing
+
+```
+CUDA_VISIBLE_DEVICES={device ID} python main.py --video-path {path of video features} --audio-path {path of audio features} --flow-path {path of flow features} --train-label-path {path of label file of training set} --test-label-path {path of label file of test set} --action-type {Ball/Clubs/Hoop/Ribbon} --dataset RG --clip-num 68 --test --ckpt {the name of the used checkpoint}
+```
+
+**Please note! During training, we save the model that performs best in complete multimodal scenarios. Then, during testing, we evaluate this model across all incomplete multimodal scenarios. Additionally, we save both the model with the best SP. Corr. metric and the model with the best MSE metric, then select the model that achieves better overall balance across all settings. You can modify the code based on your specific application and select the optimal model for your needs.**
+
+Be patient and persistent in tuning the code to achieve new state-of-the-art results.
+
+## Model Weights
+You can download our model weights for each dataset [here](https://huggingface.co/Biubiu95/LIMSSR-Weights).
 
 ## Citation
 If our project is helpful for your research, please consider citing:
@@ -72,6 +133,7 @@ If our project is helpful for your research, please consider citing:
   journal={arXiv preprint arXiv:2605.00434},
   year={2026}
 }
+
 @inproceedings{xu2026mcmoe,
   title={MCMoE: Completing Missing Modalities with Mixture of Experts for Incomplete Multimodal Action Quality Assessment},
   author={Xu, Huangbiao and Wu, Huanqi and Ke, Xiao and Wu, Junyi and Xu, Rui and Xu, Jinglin},
